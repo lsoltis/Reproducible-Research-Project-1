@@ -2,7 +2,7 @@
 title: "Reproducible Research Course Project 1"
 author: "Luke Soltis"
 date: "July 18, 2016"
-output: pdf_document
+output: html_document
 ---
 
 Introduction
@@ -27,13 +27,19 @@ library(ggplot2)
 library(lubridate)
 library(dplyr)
 library(lattice)
-
+library(raster)
+setwd("C:/Users/Luke/Documents/Coursera")
 data <- read.csv("activity.csv")
 
 stepsbyday <- aggregate(steps ~ date, data, sum)
+jpeg('plot1.jpg')
 hist(stepsbyday$steps, main = paste("Total Steps per Day"), col = "green", xlab = "Number of Steps")
+dev.off()
+
 
 ```
+![Plot 1](plot1.jpg)
+
 
 Mean and median number of steps taken each day
 
@@ -50,8 +56,13 @@ Time series plot of the average number of steps taken
 
 stepsinterval <- aggregate(steps ~ interval, data, mean)
 
+jpeg('plot2.jpg')
 plot(stepsinterval$interval, stepsinterval$steps, type = "l", xlab = "Interval", ylab = "Number of Steps", main = "Average Number of Steps per Day by Interval")
+dev.off()
+
 ```
+![Plot 2](plot2.jpg)
+
 
 The 5-minute interval that, on average, contains the maximum number of steps
 
@@ -78,11 +89,13 @@ Histogram of the total number of steps taken each day after missing values are i
 
 ```{r}
 
+jpeg('plot3.jpg')
 stepsbydayi <- aggregate(steps ~ date, imputeddata, sum)
 hist(stepsbydayi$steps, main = paste("Total Steps Each Day"), col = "blue", xlab = "Number of Steps")
 
 hist(stepsbyday$steps, main = paste("Total Steps Each Day"), col="green", xlab="Number of Steps", add=T)
 legend("topright", c("Imputed", "Non-imputed"), col=c("blue", "green"), lwd=10)
+dev.off()
 
 stepmean.i <- mean(stepsbydayi$steps)
 stepmedian.i <- median(stepsbydayi$steps)
@@ -94,6 +107,8 @@ med_diff <- stepmedian.i-stepmedian
 total_diff <- sum(stepsbydayi$steps) - sum(stepsbyday$steps)
 
 ```
+![Plot 3](plot3.jpg)
+
 
 Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
 
@@ -105,9 +120,10 @@ imputeddata$dow = as.factor(ifelse(is.element(weekdays(as.Date(imputeddata$date)
 
 stepsbyintervali <- aggregate(steps ~ interval + dow, imputeddata, mean)
 
+jpeg('plot4.jpg')
 xyplot(stepsbyintervali$steps ~ stepsbyintervali$interval|stepsbyintervali$dow, main = "Average Steps per Day by Interval", xlab = "Interval", ylab = "Steps", layout = c(1,2), type = "l")
-  
+  dev.off()
   
 
 ```
-
+![Plot 4](plot4.jpg)
